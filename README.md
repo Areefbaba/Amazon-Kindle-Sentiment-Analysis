@@ -186,4 +186,3 @@ These insights can help publishers understand customer preferences and improve c
 
 ## Author
 Areef Baba
-Machine Learning | Data Analytics
