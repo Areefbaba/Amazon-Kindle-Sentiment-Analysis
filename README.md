@@ -93,17 +93,39 @@ The following models were trained and evaluated:
 * Random Forest
 
 ---
-
 ## Model Performance
+
+The following machine learning models were trained and evaluated on the Amazon Kindle Review dataset:
 
 | Model               | Accuracy |
 | ------------------- | -------- |
-| Logistic Regression | ~90%     |
-| Linear SVM          | ~89%     |
-| Naive Bayes         | ~87%     |
-| Random Forest       | ~84%     |
+| Logistic Regression | 75.54%   |
+| Naive Bayes         | 73.29%   |
+| Linear SVM          | 73.00%   |
+| Random Forest       | 70.92%   |
 
-(Logistic Regression selected as final model)
+### Best Performing Model
+
+**Logistic Regression**
+
+* Accuracy: 75.54%
+* Selected as the final model due to its superior performance on the dataset.
+
+### Evaluation Metrics
+
+The models were evaluated using:
+
+* Accuracy Score
+* Precision
+* Recall
+* F1 Score
+* Confusion Matrix
+
+### Observations
+
+* Logistic Regression achieved the highest classification accuracy among all tested models.
+* TF-IDF feature extraction significantly improved model performance compared to basic Bag-of-Words representations.
+* The dataset contains diverse review styles and neutral opinions, making sentiment classification a challenging NLP task.
 
 ---
 
