@@ -1,137 +1,210 @@
-# Amazon-Kindle-Sentiment-Analysis
+# Amazon Kindle Sentiment Analysis
 
-## Overview
-
-This project is an NLP-based sentiment analysis system developed using Amazon Kindle Book Reviews. The system analyzes customer reviews and predicts whether the sentiment is Positive or Negative using Machine Learning techniques.
-
-The project demonstrates the complete NLP pipeline including data preprocessing, feature extraction, model training, evaluation, and deployment readiness.
+A machine learning project for analyzing customer sentiment from Amazon Kindle reviews using Natural Language Processing (NLP), TF-IDF feature extraction, and a Linear Support Vector Machine (Linear SVM) classifier. The project includes data preprocessing, model training, evaluation, and an interactive Streamlit web application for sentiment prediction.
 
 ---
 
-## Problem Statement
+## Project Overview
 
-Online platforms receive thousands of customer reviews daily. Manually analyzing customer sentiment is time-consuming and inefficient.
-This project automates sentiment classification by applying Natural Language Processing (NLP) and Machine Learning techniques to customer reviews.
+This project classifies Amazon Kindle product reviews into three sentiment categories:
+
+* **Positive** → Ratings **4–5**
+* **Neutral** → Rating **3**
+* **Negative** → Ratings **1–2**
+
+The system processes raw review text, converts it into numerical features using TF-IDF, and predicts sentiment using a Linear SVM model.
 
 ---
 
 ## Dataset
 
-**Dataset:** Amazon Kindle Store Reviews Dataset
+The project uses the **Amazon Kindle Reviews Dataset**, containing approximately:
 
-### Dataset Statistics
+* **12,000+ reviews**
+* **11 columns**
+* Customer ratings
+* Review text
+* Review summaries
+* Product metadata
 
-* Total Reviews: 12,000+
-* Features: 11
-* Review Ratings: 1 to 5 Stars
-* Source: Amazon Kindle Store Reviews
+### Important Note
 
-### Key Columns
-* reviewText
-* summary
-* rating
-* reviewerID
-* reviewerName
+Although the dataset contains a `summary` column, the current implementation uses only:
+
+```python
+reviewText
+```
+
+for training and prediction.
 
 ---
 
-## Project Workflow
+## Sentiment Label Creation
 
-### 1. Data Collection
-
-* Loaded Kindle Review Dataset
-* Performed dataset inspection
-* Checked missing values and duplicates
-
-### 2. Data Preprocessing
-
-* Lowercase Conversion
-* URL Removal
-* Punctuation Removal
-* Stopword Removal
-* Lemmatization
-* Text Cleaning
-
-### 3. Sentiment Label Creation
-
-Ratings were converted into sentiment labels:
+Ratings are converted into sentiment labels as follows:
 
 | Rating | Sentiment |
 | ------ | --------- |
-| 4,5    | Positive  |
-| 1,2    | Negative  |
+| 1–2    | Negative  |
+| 3      | Neutral   |
+| 4–5    | Positive  |
 
-3-star reviews were removed to reduce ambiguity and improve classification performance.
+Example implementation:
 
-### 4. Feature Engineering
+```python
+def create_sentiment(rating):
+    if rating >= 4:
+        return "Positive"
+    elif rating == 3:
+        return "Neutral"
+    else:
+        return "Negative"
+```
 
-Combined:
+---
 
-* Review Summary
-* Review Text
+## Text Preprocessing
 
-Additional Features:
+The following preprocessing steps are applied:
 
-* Review Length
-* Word Count
+* Convert text to lowercase
+* Remove URLs
+* Remove punctuation
+* Remove special characters
+* Remove stopwords
+* Perform lemmatization
+* Remove extra spaces
 
-### 5. Text Vectorization
+Example:
 
-TF-IDF Vectorization was applied with:
+### Input
 
-* Unigrams
-* Bigrams
-* Maximum Features = 15000
+```text
+This Kindle is AMAZING! I love reading books on it.
+```
 
-### 6. Model Training
+### Processed Output
 
-The following models were trained and evaluated:
+```text
+kindle amazing love reading book
+```
+
+---
+
+## Feature Engineering
+
+Text is converted into numerical vectors using:
+
+```python
+TfidfVectorizer(max_features=5000)
+```
+
+### TF-IDF Settings
+
+| Parameter        | Value                        |
+| ---------------- | ---------------------------- |
+| Method           | TF-IDF                       |
+| Maximum Features | 5000                         |
+| N-grams          | Default                      |
+| Stopwords        | Removed during preprocessing |
+
+---
+
+## Machine Learning Models Evaluated
+
+The notebook trains and evaluates multiple models:
 
 * Logistic Regression
 * Multinomial Naive Bayes
-* Linear SVM
 * Random Forest
+* Linear Support Vector Machine (Linear SVM)
 
 ---
-## Model Performance
 
-The following machine learning models were trained and evaluated on the Amazon Kindle Review dataset:
+## Final Selected Model
 
-| Model               | Accuracy |
-| ------------------- | -------- |
-| Logistic Regression | 75.54%   |
-| Naive Bayes         | 73.29%   |
-| Linear SVM          | 73.00%   |
-| Random Forest       | 70.92%   |
+The current notebook selects:
 
-### Best Performing Model
+```python
+LinearSVC()
+```
 
-**Logistic Regression**
+as the final prediction model.
 
-* Accuracy: 75.54%
-* Selected as the final model due to its superior performance on the dataset.
+This model is also used inside:
 
-### Evaluation Metrics
+```text
+app.py
+```
 
-The models were evaluated using:
+making the Streamlit application consistent with the notebook implementation.
 
-* Accuracy Score
-* Precision
-* Recall
-* F1 Score
-* Confusion Matrix
+---
 
-### Observations
+## Training Workflow
 
-* Logistic Regression achieved the highest classification accuracy among all tested models.
-* TF-IDF feature extraction significantly improved model performance compared to basic Bag-of-Words representations.
-* The dataset contains diverse review styles and neutral opinions, making sentiment classification a challenging NLP task.
+### Notebook Workflow
+
+```text
+Dataset
+   ↓
+Text Cleaning
+   ↓
+Sentiment Labeling
+   ↓
+TF-IDF (5000 features)
+   ↓
+Train/Test Split
+   ↓
+Train Multiple Models
+   ↓
+Evaluate Models
+   ↓
+Select Linear SVM
+   ↓
+Prediction
+```
+
+---
+
+## Streamlit Application
+
+The project includes an interactive Streamlit app where users can enter custom review text and receive sentiment predictions.
+
+### Features
+
+* Real-time prediction
+* Three-class sentiment output
+* Same preprocessing as notebook
+* Same TF-IDF configuration
+* Same Linear SVM algorithm
+
+Run locally:
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## Project Structure
+
+```text
+Amazon-Kindle-Sentiment-Analysis/
+│
+├── notebook.ipynb
+├── app.py
+├── requirements.txt
+├── README.md
+├── kindle_reviews.csv
+└── assets/
+```
 
 ---
 
 ## Technologies Used
 
-### Programming Language
+### Programming
 
 * Python
 
@@ -139,50 +212,111 @@ The models were evaluated using:
 
 * Pandas
 * NumPy
-* Scikit-Learn
+* Scikit-learn
 * NLTK
+* Streamlit
 * Matplotlib
 * Seaborn
 
-### NLP Techniques
+---
 
-* Text Cleaning
-* Stopword Removal
-* Lemmatization
-* TF-IDF Vectorization
+## Known Limitations
+
+### 1. TF-IDF Before Train/Test Split
+
+In the current notebook:
+
+```python
+tfidf.fit_transform()
+```
+
+is applied before splitting the dataset.
+
+This can introduce minor data leakage because vocabulary information from the test set becomes available during training.
+
+A more production-ready workflow would be:
+
+```text
+Split Data
+   ↓
+Fit TF-IDF on Training Data
+   ↓
+Transform Train/Test
+   ↓
+Train Model
+```
 
 ---
-## Business Insights
 
-The analysis revealed:
+### 2. Model Retraining in Streamlit App
 
-* Positive reviews frequently contain words such as:
+The current `app.py` retrains the model from the dataset if saved model files are not available.
 
-  * excellent
-  * useful
-  * informative
-  * recommended
+Workflow:
 
-* Negative reviews commonly include:
+```text
+Dataset
+   ↓
+Training
+   ↓
+Prediction
+```
 
-  * boring
-  * disappointing
-  * poor
-  * waste
+A production deployment would instead use:
 
-These insights can help publishers understand customer preferences and improve content quality.
+```text
+Saved TF-IDF
+Saved Model
+   ↓
+Prediction
+```
+
+using:
+
+```text
+tfidf.pkl
+sentiment_model.pkl
+```
+
+---
+
+### 3. Summary Column Not Used
+
+The dataset includes:
+
+* reviewText
+* summary
+
+Currently, only:
+
+```text
+reviewText
+```
+
+is used for training.
+
+Combining both fields may improve model performance.
 
 ---
 
 ## Future Improvements
 
-* Deep Learning Models (LSTM, GRU)
-* BERT-based Sentiment Classification
-* Aspect-Based Sentiment Analysis
-* Real-time Streamlit Deployment
-* Explainable AI for sentiment prediction
+* Save trained models (`.pkl`)
+* Hyperparameter tuning
+* Cross-validation
+* Use review summaries
+* Deep learning models (LSTM, BERT)
+* Transformer-based sentiment analysis
+* Model deployment on cloud platforms
 
 ---
 
-## Author
-Areef Baba
+## Example Predictions
+
+| Review                                 | Prediction |
+| -------------------------------------- | ---------- |
+| "Amazing product, highly recommended!" | Positive   |
+| "Average reading experience."          | Neutral    |
+| "Battery life is terrible."            | Negative   |
+
+---
